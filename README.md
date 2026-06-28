@@ -152,7 +152,6 @@ Proyek ini dikembangkan sebagai tugas kelompok beranggotakan 5 orang:
 | Nabilla Fausta M | 3.34.25.0.20 |
 | Zahra Auliya | 3.34.25.0.25 | 
 
-> *Silakan lengkapi nama, NIM, dan peran masing-masing anggota kelompok sebelum submit.*
 
 ---
 
