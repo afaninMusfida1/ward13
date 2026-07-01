@@ -691,10 +691,11 @@ function triggerScare(phase) {
 
   let spawnDist; // jarak dari player ke posisi spawn clown
   let entityId;
+  let scareScale; // skala clown saat jumpscare — makin dekat fasenya, makin gede & makin "nerkam"
 
-  if (phase === 1) { spawnDist = 4.0; entityId = 'scare-1-entity'; }
-  if (phase === 2) { spawnDist = 1.8; entityId = 'scare-2-entity'; }
-  if (phase === 3) { spawnDist = 1.2; entityId = 'scare-3-entity'; }
+  if (phase === 1) { spawnDist = 4.0; entityId = 'scare-1-entity'; scareScale = 1.8; }
+  if (phase === 2) { spawnDist = 1.8; entityId = 'scare-2-entity'; scareScale = 2.4; }
+  if (phase === 3) { spawnDist = 1.2; entityId = 'scare-3-entity'; scareScale = 3.2; }
 
   const entity = document.getElementById(entityId);
   if (!entity) return;
@@ -703,7 +704,7 @@ function triggerScare(phase) {
   const wx = pp.x + fwdX * spawnDist;
   const wz = pp.z + fwdZ * spawnDist;
 
-  // Set parent: Y=0 (lantai), model berdiri sendiri setinggi 1.95m
+  // Set parent: Y=0 (lantai), model berdiri sendiri setinggi 1.95m (dikali scareScale saat jolt)
   entity.setAttribute('position', `${wx} 0 ${wz}`);
   entity.setAttribute('rotation', `0 ${clownFaceDeg} 0`);
 
@@ -713,7 +714,7 @@ function triggerScare(phase) {
     child.setAttribute('scale', '0.01 0.01 0.01');
     child.setAttribute('rotation', '0 0 0');
   }
-  playClownJolt(entity, 1.0);
+  playClownJolt(entity, scareScale);
 
   // Audio & visual effects
   if (phase === 1) {
