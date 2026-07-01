@@ -41,9 +41,11 @@ body {
   position: fixed;
   inset: 0;
   z-index: 100;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: var(--bg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .screen.active { display: flex; }
 
@@ -52,7 +54,17 @@ body {
   text-align: center;
   padding: 2rem;
   max-width: 520px;
+  width: 100%;
+  margin: auto 0; /* centers vertically when it fits; when it's taller than the
+                      viewport the screen scrolls from the top instead of
+                      clipping content equally off the top and bottom */
 }
+
+/* thin themed scrollbar so it doesn't look like a stock browser bar */
+.screen::-webkit-scrollbar { width: 6px; }
+.screen::-webkit-scrollbar-track { background: transparent; }
+.screen::-webkit-scrollbar-thumb { background: var(--dim); }
+.screen { scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
 
 .menu-tag {
   font-size: 0.7rem;
@@ -63,7 +75,7 @@ body {
 
 .menu-title {
   font-family: var(--mono);
-  font-size: clamp(4rem, 12vw, 7rem);
+  font-size: clamp(3.2rem, 9vw, 5.5rem);
   font-weight: 400;
   letter-spacing: 0.05em;
   color: #d4cac0;
@@ -97,7 +109,7 @@ body {
   font-size: 1.05rem;
   line-height: 1.75;
   color: #9a918a;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
 }
 
 .menu-desc strong { color: var(--paper-dark); }
@@ -145,6 +157,7 @@ body {
 .loading-content {
   text-align: center;
   width: 300px;
+  margin: auto 0;
 }
 
 .loading-bar-wrap {
@@ -173,6 +186,7 @@ body {
 .end-content {
   text-align: center;
   padding: 2rem;
+  margin: auto 0;
 }
 .end-content h2 {
   font-size: 2.5rem;
@@ -364,10 +378,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background: rgba(6,2,3,0.92);
   padding: 1rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
+
+.doc-viewer::before,
+.doc-viewer::after {
+  content: '';
+  flex: 1 0 auto;
+}
+
+.doc-viewer::-webkit-scrollbar { width: 6px; }
+.doc-viewer::-webkit-scrollbar-track { background: transparent; }
+.doc-viewer::-webkit-scrollbar-thumb { background: var(--dim); }
+.doc-viewer { scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
 
 .doc-paper {
   background: var(--paper);
@@ -376,6 +403,7 @@ body {
   width: 100%;
   padding: 2rem 2.2rem;
   position: relative;
+  flex-shrink: 0;
   box-shadow:
     0 0 0 1px rgba(0,0,0,0.2),
     0 4px 32px rgba(0,0,0,0.8),
@@ -460,10 +488,12 @@ body {
   text-align: center;
   max-width: 420px;
   opacity: 0.8;
+  flex-shrink: 0;
 }
 
 .btn-close-doc {
   margin-top: 0.75rem;
+  margin-bottom: 1rem;
   background: rgba(200,137,26,0.12);
   border: 1px solid var(--amber);
   color: var(--amber);
@@ -473,6 +503,7 @@ body {
   padding: 0.6rem 1.8rem;
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 .btn-close-doc:hover {
   background: rgba(200,137,26,0.25);
@@ -681,7 +712,7 @@ a-scene.hidden { display: none; }
 ══════════════════════════════ */
 .menu-objectives {
   text-align: left;
-  margin: 0 auto 1.8rem;
+  margin: 0 auto 1.1rem;
   max-width: 400px;
   background: rgba(255,255,255,0.03);
   border: 1px solid #1a1010;
@@ -701,4 +732,47 @@ a-scene.hidden { display: none; }
 .obj-loc {
   color: var(--dim);
   font-size: 0.67rem;
+}
+
+/* ══════════════════════════════
+   COMPACT MENU ON SHORT VIEWPORTS
+   The menu content is naturally tall (title + desc + objectives list
+   + controls + button). On wide-but-short windows (typical laptop
+   browser: ~1366x700 once tabs/address bar are subtracted) the old
+   sizing — especially the title, which scaled off vw instead of vh —
+   stayed at max size and overflowed the screen, forcing users to zoom
+   out to 75% to see the start button. These breakpoints scale
+   everything down by viewport HEIGHT so it always fits at 100% zoom.
+══════════════════════════════ */
+@media (max-height: 850px) {
+  .menu-content { padding: 1.4rem 2rem; }
+  .menu-tag { margin-bottom: 0.7rem; }
+  .menu-title { font-size: clamp(2.6rem, 7vh, 4.4rem); }
+  .menu-sub { margin-top: 0.35rem; }
+  .menu-divider { margin: 1.1rem auto; }
+  .menu-desc { font-size: 0.92rem; line-height: 1.5; margin-bottom: 1rem; }
+  .menu-objectives { padding: 0.6rem 1rem; margin-bottom: 0.8rem; }
+  .obj-item { padding: 0.2rem 0; font-size: 0.68rem; }
+  .menu-controls { margin-bottom: 1rem; gap: 1.1rem; }
+  .btn-start { padding: 0.6rem 2.4rem; margin-bottom: 0.8rem; }
+}
+
+@media (max-height: 680px) {
+  .menu-content { padding: 1rem 1.75rem; }
+  .menu-tag { font-size: 0.62rem; margin-bottom: 0.5rem; }
+  .menu-title { font-size: clamp(2.2rem, 6.2vh, 3.6rem); }
+  .menu-divider { margin: 0.8rem auto; }
+  .menu-desc { font-size: 0.85rem; line-height: 1.4; margin-bottom: 0.75rem; }
+  .menu-objectives { padding: 0.45rem 0.85rem; margin-bottom: 0.6rem; }
+  .obj-item { padding: 0.14rem 0; font-size: 0.64rem; }
+  .obj-loc { font-size: 0.6rem; }
+  .menu-controls { font-size: 0.68rem; margin-bottom: 0.75rem; gap: 0.9rem; }
+  .btn-start { padding: 0.5rem 2rem; font-size: 0.82rem; margin-bottom: 0.6rem; }
+  .menu-warn { font-size: 0.6rem; }
+}
+
+@media (max-height: 560px) {
+  .menu-title { font-size: clamp(1.9rem, 5.6vh, 3rem); }
+  .menu-desc br { display: none; } /* let it reflow instead of forcing extra lines */
+  .menu-objectives { display: none; } /* objectives repeat in the HUD tooltips in-game; safe to drop here */
 }
